@@ -4,7 +4,7 @@ const { Kafka } = require('kafkajs')
 class OrdersController {
   constructor() {
     this.kafka = new Kafka({
-      clientId: 'quickstart_app',
+      clientId: 'ecommerce_microservice',
       brokers: ['localhost:9092']
     })
   }

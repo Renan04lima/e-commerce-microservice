@@ -1,8 +1,8 @@
 const { Kafka } = require('kafkajs')
 
 const kafka = new Kafka({
-  clientId: 'quickstart_app',
-  brokers: ['127.0.0.1:9092']
+  clientId: 'ecommerce_microservice',
+  brokers: ['localhost:9092']
 })
 
 const run = async () => {
