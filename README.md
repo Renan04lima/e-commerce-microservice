@@ -22,6 +22,7 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#checklist-features">Checklist Features</a></li>
       </ul>
     </li>
     <li>
@@ -56,7 +57,17 @@ This project simulates a simple e-commerce microservice, using Kafka to carry ou
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+ ### Checklist Features
 
+- Version 1.0.0
+    - [x] Should have a microservice responsible for orders
+    - [x] Should have a microservice responsible for payment
+    - [x] Should have a microservice responsible for billing
+    - [x] Microservices must communicate using Apache Kafka
+
+- Version 2.0.0
+    - [ ] Should use Serverless Framework instead of Express.js
+    - [ ] Should have authentication with AWS Cognito
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -117,7 +128,6 @@ This is an example of how to list things you need to use the software and how to
    docker-compose exec kafka bash
    usr/bin/kafka-console-consumer --topic <name_of_topic> --from-beginning --bootstrap-server localhost:9092
   ```
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
