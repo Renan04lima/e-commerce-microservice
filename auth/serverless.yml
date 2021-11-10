@@ -2,17 +2,20 @@ service: serverless-http-api-typescript
 frameworkVersion: '2'
 
 provider:
+  environment:
+    ${file(env.json)}
   name: aws
   runtime: nodejs14.x
   lambdaHashingVersion: '20201221'
 
 functions:
-  hello:
-    handler: handler.hello
+  login:
+    handler: src/index.login
     events:
       - httpApi:
-          path: /
-          method: get
+          path: login
+          method: post
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-offline
