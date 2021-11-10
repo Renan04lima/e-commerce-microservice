@@ -1,11 +1,11 @@
-import * as AmazonCognitoIdentity from 'amazon-cognito-identity-js'
-import { settings } from './settings';
+import { CognitoUserPool, AuthenticationDetails, CognitoUser, CognitoUserSession} from 'amazon-cognito-identity-js'
+import { env } from './config/env';
 
 class Login {
-  private readonly userPool: AmazonCognitoIdentity.CognitoUserPool
+  private readonly userPool: CognitoUserPool
 
   constructor(UserPoolId: string, ClientId:string ){
-    this.userPool = new AmazonCognitoIdentity.CognitoUserPool({
+    this.userPool = new CognitoUserPool({
       UserPoolId,
       ClientId,
     });
@@ -13,40 +13,66 @@ class Login {
 
   async main(event: any) {
     let {email, password} = JSON.parse(event.body);
-    let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+    let authenticationDetails = new AuthenticationDetails({
       Username: email,
       Password: password,
     });
-    let cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+    let cognitoUser = new CognitoUser({
       Username: email,
       Pool: this.userPool,
     });
 
+    try {
+      const credencials = await this.loginWithCognito(cognitoUser, authenticationDetails)
+      return {
+        statusCode: 200,
+        body: JSON.stringify(credencials),
+      }
+    } catch (err) {
+      if(err?.code === 'UserNotConfirmedException'){
+        return {
+          statusCode: 401,
+          body: JSON.stringify({
+            error: err.message
+          }),
+        }
+      }
+      if(err?.code === 'NotAuthorizedException'){
+        return {
+          statusCode: 403,
+          body: JSON.stringify({
+            error: err.message
+          }),
+        }
+      }
+
+      console.error(err);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+            error: 'Server failed. Try again soon.'
+        }),
+      }
+    }
+  }
+
+  private async loginWithCognito(cognitoUser: CognitoUser, authenticationDetails: AuthenticationDetails) {
     return new Promise((resolve, reject) => {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
           const access_token = result.getAccessToken().getJwtToken();
           const id_token = result.getIdToken().getJwtToken();
           resolve({
-            statusCode: 200,
-            body: {
-              access_token: access_token,
-              id_token:id_token
-            },
+            access_token,
+            id_token
           });
         },
-        onFailure: function (err) {
-          reject({
-            statusCode: 500,
-            body: JSON.stringify({
-              message: err.message,
-            }),
-          });
-        },
+        onFailure: reject
       });
     });
   }
 }
-const login = new Login(settings.userPoolId, settings.clientId)
+
+const login = new Login(env.userPoolId, env.clientId)
 
 export default login.main.bind(login)
