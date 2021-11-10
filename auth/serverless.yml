@@ -15,6 +15,12 @@ functions:
       - httpApi:
           path: login
           method: post
+  register:
+    handler: src/index.register
+    events:
+      - httpApi:
+          path: register
+          method: post
 
 plugins:
   - serverless-plugin-typescript
