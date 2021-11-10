@@ -8,7 +8,7 @@
 
   <p align="center">
     <img alt="License" src="https://img.shields.io/static/v1?label=license&message=MIT&color=8257E5&labelColor=000000">
-    <img src="https://img.shields.io/static/v1?label=ECOMMERCE&message=KAFKA&color=8257E5&labelColor=000000" alt="ECOMMERCE KAFKA" />
+    <img src="https://img.shields.io/static/v1?label=ECOMMERCE&message=MICROSERVICE&color=8257E5&labelColor=000000" alt="ECOMMERCE MICROSERVICE" />
   </p>
 </div>
 
@@ -51,9 +51,13 @@ This project simulates a simple e-commerce microservice, using Kafka to carry ou
 
 ### Built With
 
+- [Serverless Framework](https://www.serverless.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [AWS Cognito](https://aws.amazon.com/pt/cognito/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-- [Express](https://expressjs.com/pt-br/)
 - [KafkaJS](https://kafka.js.org/)
+- [Express](https://expressjs.com/pt-br/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -65,9 +69,10 @@ This project simulates a simple e-commerce microservice, using Kafka to carry ou
     - [x] Should have a microservice responsible for billing
     - [x] Microservices must communicate using Apache Kafka
 
-- Version 2.0.0
-    - [ ] Should use Serverless Framework instead of Express.js
-    - [ ] Should have authentication with AWS Cognito
+- Version 1.1.0
+    - [x] Should have a microservice responsible for authentication
+    - [x] Should be possible register a user using AWS Cognito 
+    - [x] Should be possible to do login using AWS Cognito 
 
 <!-- GETTING STARTED -->
 ## Getting Started
