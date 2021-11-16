@@ -1,6 +1,6 @@
 const express = require('express')
 const { Kafka } = require('kafkajs')
-
+const CognitoExpress = require('cognito-express')
 class OrdersController {
   constructor() {
     this.kafka = new Kafka({
@@ -10,7 +10,7 @@ class OrdersController {
   }
 
   async handle(req, res) {
-    var order = req.body;
+    var order = req.body
     order.id = Math.floor(Date.now() / 1000)
     order.status = 'PENDING_PAYMENT'
 
@@ -33,9 +33,32 @@ class OrdersController {
 }
 
 const app = express()
-app.use(express.json());
+
+const auth = express.Router()
+const cognitoExpress = new CognitoExpress({
+  region: 'us-east-1',
+  cognitoUserPoolId: process.env.COGNITO_USER_POOL_ID,
+  tokenUse: 'id',
+  tokenExpiration: 3600000
+})
+auth.use(function (req, res, next) {
+  let idToken = req.headers.authorization
+  if (!idToken) return res.status(401).send({ message: 'ID Token missing from header' })
+
+  const [bearer, realToken] = idToken.split(' ')
+  if (!/Bearer/.test(bearer)) {
+    return res.status(401).send({ message: 'token unformat' })
+  }
+  cognitoExpress.validate(realToken, function (err, response) {
+    console.error(err, response)
+    if (err) return res.status(401).send(err)
+    res.locals.user = response
+    next()
+  })
+})
+app.use(express.json())
 const ordersController = new OrdersController()
-app.post('/orders', ordersController.handle.bind(ordersController))
+app.post('/orders', auth, ordersController.handle.bind(ordersController))
 const port = 3001
 app.listen(port, () => {
   console.log(`Express API http://localhost:${port}`)
