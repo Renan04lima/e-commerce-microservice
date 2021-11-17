@@ -43,7 +43,7 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-This project simulates a simple e-commerce microservice, using Kafka to carry out the communication between the order, payment, and billing services
+This project simulates a simple e-commerce microservice, using Kafka to carry out the communication between the order, payment, and billing services and use AWS Cognito for authentication
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -69,10 +69,11 @@ This project simulates a simple e-commerce microservice, using Kafka to carry ou
     - [x] Should have a microservice responsible for billing
     - [x] Microservices must communicate using Apache Kafka
 
-- Version 1.1.0
+- Version 2.0.0
     - [x] Should have a microservice responsible for authentication
     - [x] Should be possible register a user using AWS Cognito 
     - [x] Should be possible to do login using AWS Cognito 
+    - [x] Should have authentication to access POST /orders
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -87,6 +88,8 @@ To get a local copy up and running follow these simple example steps.
 This is an example of how to list things you need to use the software and how to install them.
 * docker and docker compose
 * NPM
+* Serverless Framework
+* AWS Cognito
 
 
 
@@ -105,6 +108,12 @@ This is an example of how to list things you need to use the software and how to
    docker-compose exec kafka bash
    usr/bin/kafka-topics --create --topic <name_of_topic> --bootstrap-server localhost:9092
   ```
+  4. Configure the User Pool, see more on https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html
+  5. Inicialize auth microservice
+   ```sh
+   cd auth
+   npm i && sls deploy
+  ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -118,17 +127,19 @@ This is an example of how to list things you need to use the software and how to
    cd <microservice_folder>
    node src/index.js
   ```
-2. Send request
+2. Register and/or login to the auth microservice
+3. Send request
   ```sh
     curl --request POST \
       --url http://localhost:3001/orders \
+      --header 'Authorization: Bearer <ID_TOKEN>' \
       --header 'Content-Type: application/json' \
       --data '{
-      "price": 39.99,
-      "product": "book"
-    }'
+      "product_name": "book",
+      "price": 49.99
+      }'
   ```
-3. To see each topic consumer event of `RECEIVE_ORDER`, `PAID_ORDER` and `BILLED_ORDER`, run on different terminal session
+4. To see each topic consumer event of `RECEIVE_ORDER`, `PAID_ORDER` and `BILLED_ORDER`, run on different terminal session
   ```sh
    docker-compose exec kafka bash
    usr/bin/kafka-console-consumer --topic <name_of_topic> --from-beginning --bootstrap-server localhost:9092
