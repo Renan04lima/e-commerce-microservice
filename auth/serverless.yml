@@ -1,4 +1,4 @@
-service: serverless-http-api-typescript
+service: ecommerce-auth
 frameworkVersion: '2'
 
 provider:
@@ -12,15 +12,11 @@ functions:
   login:
     handler: src/index.login
     events:
-      - httpApi:
-          path: login
-          method: post
+      - httpApi: 'POST /login'
   register:
     handler: src/index.register
     events:
-      - httpApi:
-          path: register
-          method: post
+      - httpApi: 'POST /register'
 
 plugins:
   - serverless-plugin-typescript

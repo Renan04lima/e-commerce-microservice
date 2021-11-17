@@ -10,6 +10,7 @@ const app = express()
 const ordersController = new OrdersController()
 
 app.use(express.json())
+app.get('/', (req, res) => res.send({ message: 'API Works!' }))
 app.post('/orders', auth, ordersController.handle.bind(ordersController))
 app.listen(port, () => {
   console.log(`Express API http://localhost:${port}`)
